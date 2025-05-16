@@ -23,14 +23,21 @@
       border: 1px solid #ccc;
       padding: 4px;
     }
+
+    td {
+      padding: 5px 10px;
+    }
+    .info {
+      line-height: 1.5;
+    }
   </style>
 </head>
 
 <body>
   <h1>K8s Workshop Demo App v2</h1>
-  <div id="healthz">Health: ...</div>
-  <div id="readyz">Ready: ...</div>
-  <div id="info">Info is loading...</div>
+  <div class="info" id="healthz">Health: ...</div>
+  <div class="info" id="readyz">Ready: ...</div>
+  <div class="info" id="info">Info is loading...</div>
   <div id="records"></div>
   <script>
     async function fetchInfo() {
