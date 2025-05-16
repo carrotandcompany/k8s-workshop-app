@@ -11,7 +11,7 @@ import argparse
 
 APP_VERSION = "2.0.0"
 DB_PARAMS = {
-    'host': os.environ.get('POSTGRES_HOST', 'db'),
+    'host': os.environ.get('POSTGRES_HOST', 'demo-postgres'),
     'port': os.environ.get('POSTGRES_PORT', 5432),
     'dbname': os.environ.get('POSTGRES_DB', 'demo'),
     'user': os.environ.get('POSTGRES_USER', 'demo'),
@@ -80,6 +80,12 @@ def info():
     db = get_db_conn()
     if db is None:
         return jsonify({"error": "Database unavailable"}), 503
+    # Try to ensure table if DB is available, but don't block if db is not available
+    try:
+        # NOTE: In production code, DB schema changes should (migrations) should be handled outside the app livecycle
+        try_creating_table()
+    except Exception:
+        return jsonify({"error": "Table creation failed"}), 503
     now = datetime.now(timezone.utc)
     hostname = socket.gethostname()
     with db.cursor(cursor_factory=RealDictCursor) as cur:
@@ -146,12 +152,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true', help='Enable Flask debug mode (hot reloading)')
     args = parser.parse_args()
-    # Try to ensure table if DB is available, but don't block if db is not available
-    try:
-        # NOTE: In production code, DB schema changes should (migrations) should be handled outside the app livecycle
-        try_creating_table()
-    except Exception:
-        pass
     app.run(debug=args.debug, host="0.0.0.0", port=3000)
 
 if __name__ == "__main__":

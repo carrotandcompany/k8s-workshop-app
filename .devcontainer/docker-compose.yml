@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  db:
+  demo-postgres:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
