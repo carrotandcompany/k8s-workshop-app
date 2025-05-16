@@ -3,7 +3,7 @@ import socket
 import signal
 import sys
 import time
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, Response
 from datetime import datetime, timezone
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -26,6 +26,9 @@ READINESS_DELAY = 2  # seconds
 
 # Add a global flag to force healthz failure
 force_healthz_fail = False
+
+BG_COLOR = os.environ.get('BG_COLOR', '#fff')
+TITLE_SUFFIX = os.environ.get('TITLE_SUFFIX', '')
 
 def get_db_conn():
     global conn
@@ -59,7 +62,17 @@ def graceful_exit(signum, frame):
 
 @app.route("/")
 def index():
-    return send_from_directory(app.static_folder, "index.html")
+    try:
+        with open(os.path.join(app.static_folder, "index.html")) as f:
+            html = f.read()
+        # Inject background color style into <body>
+        html = html.replace('<body>', f'<body style="background-color: {BG_COLOR};">')
+        # Inject title suffix into <h1>
+        if TITLE_SUFFIX:
+            html = html.replace('<h1>K8s Workshop Demo App v2</h1>', f'<h1>K8s Workshop Demo App v2 {TITLE_SUFFIX}</h1>')
+        return Response(html, mimetype='text/html')
+    except Exception as e:
+        return f"Error loading page: {e}", 500
 
 @app.route("/api/info")
 def info():
