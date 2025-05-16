@@ -60,6 +60,7 @@ def graceful_exit(signum, frame):
         conn.close()
     sys.exit(0)
 
+
 @app.route("/")
 def index():
     try:
@@ -139,8 +140,9 @@ def readyz():
 
 def main():
     print(f"App version: {APP_VERSION}", flush=True)
-    for sig in (signal.SIGTERM, signal.SIGINT):
-        signal.signal(sig, graceful_exit)
+    # Register signal handlers
+    signal.signal(signal.SIGINT, graceful_exit)   # Ctrl+C
+    signal.signal(signal.SIGTERM, graceful_exit)  # docker stop, kill -15
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true', help='Enable Flask debug mode (hot reloading)')
     args = parser.parse_args()
