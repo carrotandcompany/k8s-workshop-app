@@ -11,7 +11,7 @@ import argparse
 
 APP_VERSION = "2.0.0"
 DB_PARAMS = {
-    'host': os.environ.get('POSTGRES_HOST', 'demo-postgres'),
+    'host': os.environ.get('POSTGRES_HOST', 'db'),
     'port': os.environ.get('POSTGRES_PORT', 5432),
     'dbname': os.environ.get('POSTGRES_DB', 'demo'),
     'user': os.environ.get('POSTGRES_USER', 'demo'),
