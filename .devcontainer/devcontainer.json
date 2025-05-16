@@ -1,0 +1,14 @@
+{
+  "name": "K8s Workshop App Dev",
+  "remoteUser": "vscode",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postStartCommand": ".devcontainer/start.sh",
+  "postCreateCommand": ".devcontainer/postCreate.sh",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "dockerDashComposeVersion": "none" // needed to run on windows, otherwise it fails (2025-05-05)
+    }
+  }
+}
